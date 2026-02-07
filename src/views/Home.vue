@@ -16,12 +16,13 @@ onMounted(() => {
   mm.add(
       {
         // set up any number of arbitrarily-named conditions. The function below will be called when ANY of them match.
-        isDesktop: "(min-width: 1024px)",
         isMobile: "(max-width: 639px)",
+        isTablet: "(min-width: 640px) and (max-width: 1023px)",
+        isDesktop: "(min-width: 1024px)",
       },
       (context) => {
         // context.conditions has a boolean property for each condition defined above indicating if it's matched or not.
-        let { isDesktop, isMobile, } = context.conditions;
+        let { isDesktop, isMobile, isTablet } = context.conditions;
 
         const smoother = ScrollSmoother.create({
           wrapper: "#smooth-wrapper",
@@ -130,8 +131,8 @@ onMounted(() => {
         </section>
 
         <section id="about-us" class="s2 w-full h-screen bg-black overflow-hidden absolute text-white/90 text-xl lg:text-2xl xl:text-3xl z-2">
-          <div id="s2-sub" class="s2-sub w-full h-full grid grid-cols-1 sm:grid-cols-2 -mt-8 sm:-mt-10 gap-4 lg:gap-16 px-4 pt-24 lg:px-10">
-            <div class="w-full h-full flex flex-col justify-center gap-6 max-w-3xl order-2 sm:order-1">
+          <div id="s2-sub" class="s2-sub w-full h-full grid grid-cols-1 sm:grid-cols-2 sm:-mt-10 gap-4 lg:gap-16 px-4 pt-24 lg:px-10">
+            <div class="w-full h-full flex flex-col lg:justify-center gap-6 max-w-3xl order-2 sm:order-1">
 
               <h2 class="text-3xl lg:text-5xl italic text-white leading-tight info-text">
                 No “colocamos luces”,
@@ -156,8 +157,8 @@ onMounted(() => {
               </p>
 
             </div>
-            <div class="flex items-center order-1 sm:order-2 info-image">
-              <img src="@/assets/1_4.jpeg" alt="" class="rounded-md">
+            <div class="flex lg:items-center order-1 sm:order-2 info-image">
+              <img src="@/assets/1_4.jpeg" alt="" class="rounded-md h-36 sm:h-auto sm:w-auto mx-auto">
             </div>
           </div>
         </section>
