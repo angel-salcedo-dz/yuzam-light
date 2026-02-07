@@ -1,0 +1,6 @@
+@import './base.css';
+@import "tailwindcss";
+
+.swiper-wrapper {
+    transition-timing-function: linear !important;
+}
