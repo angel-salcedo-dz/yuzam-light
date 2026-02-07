@@ -46,8 +46,7 @@ onMounted(() => {
           <div class="w-full h-full grid grid-cols-1 gap-4 lg:gap-16 ">
             <div class="w-full h-full relative  space-y-4 ">
               <div
-                  id="services-title"
-                  class="services-title text-3xl lg:text-5xl font-semibold text-white tracking-wide pb-4"
+                  class="text-3xl lg:text-5xl font-semibold text-white tracking-wide pb-4"
               >
                 ¿Quiénes somos?
               </div>
@@ -95,7 +94,7 @@ onMounted(() => {
                     }" class="h-82"
                 >
                   <swiper-slide v-for="image in images">
-                    <img :src="image" alt="" class="w-full h-full object-cover rounded-lg">
+                    <img :src="image" alt="" class="w-full h-full object-cover rounded-xl">
                   </swiper-slide>
                 </swiper>
 
