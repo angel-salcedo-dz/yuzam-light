@@ -93,15 +93,14 @@ const faqs = [
           <div class="w-full h-full grid grid-cols-1 gap-4 lg:gap-16 ">
             <div class="w-full h-full relative  flex flex-col sm:justify-center gap-4 ">
               <div
-                  id="services-title"
-                  class="services-title text-3xl lg:text-5xl font-semibold text-white tracking-wide pb-4"
+                  class="text-3xl lg:text-5xl font-semibold text-white tracking-wide pb-4"
               >
                 Preguntas frecuentes
               </div>
             </div>
             <div class="">
               <dl class="space-y-2">
-                <Disclosure as="div" v-for="faq in faqs" :key="faq.question" class="p-4 bg-zinc-900 rounded-md" v-slot="{ open }">
+                <Disclosure as="div" v-for="faq in faqs" :key="faq.question" class="p-4 bg-zinc-900 rounded-xl" v-slot="{ open }">
                   <dt class="">
                     <DisclosureButton class="flex w-full items-start justify-between text-left ">
                       <span class="text-base/7 font-semibold">{{ faq.question }}</span>

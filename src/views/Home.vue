@@ -5,6 +5,7 @@ import {onMounted} from "vue";
 import {gsap} from "gsap";
 import Header from "@/components/Header.vue";
 import MainImage from "@/assets/1.jpeg";
+import {ChevronDoubleDownIcon, ArrowDownCircleIcon} from "@heroicons/vue/24/outline";
 
 gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
 
@@ -16,12 +17,13 @@ onMounted(() => {
   mm.add(
       {
         // set up any number of arbitrarily-named conditions. The function below will be called when ANY of them match.
-        isDesktop: "(min-width: 1024px)",
         isMobile: "(max-width: 639px)",
+        isTablet: "(min-width: 640px) and (max-width: 1023px)",
+        isDesktop: "(min-width: 1024px)",
       },
       (context) => {
         // context.conditions has a boolean property for each condition defined above indicating if it's matched or not.
-        let { isDesktop, isMobile, } = context.conditions;
+        let { isDesktop, isMobile, isTablet } = context.conditions;
 
         const smoother = ScrollSmoother.create({
           wrapper: "#smooth-wrapper",
@@ -77,7 +79,7 @@ onMounted(() => {
           duration: 1.2
         }, 2.3);
 
-// Pausa opcional en S2
+        mainTl.to({}, { duration: 1.2 });
 
         mainTl.to(".s3", {
           yPercent: 0,
@@ -88,12 +90,13 @@ onMounted(() => {
         }, 5)
 
         mainTl.to("#sub1", { opacity: 1, y: -20, duration: 1 }, 5)
-            .to("#sub1", { opacity: 0, y: -40, duration: 1 }, ) // Pausa de 1 unidad de scroll
+            .to("#sub1", { opacity: 0, y: -40, duration: 1 }, '+=1.2') // Pausa de 1 unidad de scroll
             .to("#sub2", { opacity: 1, y: -20, duration: 1 })
-            .to("#sub2", { opacity: 0, y: -40, duration: 1 }, )
+            .to("#sub2", { opacity: 0, y: -40, duration: 1 }, '+=1.2')
             .to("#sub3", { opacity: 1, y: -20, duration: 1 })
-            .to("#sub3", { opacity: 0, y: -20, duration: 1 })
+            .to("#sub3", { opacity: 0, y: -20, duration: 1 }, '+=1.2')
             .to("#sub4", { opacity: 1, y: -20, duration: 1 })
+            .to(".scroll-down", { opacity: 0, duration: 0.2 }, '<')
 
         mainTl.to({}, { duration: 2 });
         mainTl.to({}, { duration: 1 });
@@ -130,148 +133,162 @@ onMounted(() => {
         </section>
 
         <section id="about-us" class="s2 w-full h-screen bg-black overflow-hidden absolute text-white/90 text-xl lg:text-2xl xl:text-3xl z-2">
-          <div id="s2-sub" class="s2-sub w-full h-full grid grid-cols-1 sm:grid-cols-2 -mt-8 sm:-mt-10 gap-4 lg:gap-16 px-4 pt-24 lg:px-10">
-            <div class="w-full h-full flex flex-col justify-center gap-6 max-w-3xl order-2 sm:order-1">
+          <div class="relative w-full h-full">
+            <div id="s2-sub" class="s2-sub w-full h-full grid grid-cols-1 sm:grid-cols-2 sm:-mt-10 gap-4 lg:gap-16 px-4 pt-24 lg:px-10">
+              <div class="w-full h-full flex flex-col sm:justify-center gap-6 max-w-3xl order-2 sm:order-1">
 
-              <h2 class="text-3xl lg:text-5xl italic text-white leading-tight info-text">
-                No “colocamos luces”,
-                <span class="font-semibold">diseñamos atmósferas con intención</span>.
-              </h2>
+                <h2 class="text-3xl lg:text-5xl italic text-white leading-tight info-text">
+                  No “colocamos luces”,
+                  <span class="font-semibold">diseñamos atmósferas con intención</span>.
+                </h2>
 
-              <p class="text-lg lg:text-xl text-white/80 leading-relaxed info-text">
-                En <span class="font-semibold text-yellow-400">Yuzam Lighting</span> hemos sido parte de más de
-                <span class="font-semibold text-white">500 bodas</span>.
-                Entendemos lo que este día significa para ustedes.
-              </p>
+                <p class="text-lg lg:text-xl text-white/80 leading-relaxed info-text">
+                  En <span class="font-semibold text-yellow-400">Yuzam Lighting</span> hemos sido parte de más de
+                  <span class="font-semibold text-white">500 bodas</span>.
+                  Entendemos lo que este día significa para ustedes.
+                </p>
 
-              <p class="text-lg lg:text-xl text-white/70 leading-relaxed info-text">
-                Escuchamos, proponemos y diseñamos junto a ustedes,
-                transformando ideas en experiencias reales.
-              </p>
+                <p class="text-lg lg:text-xl text-white/70 leading-relaxed info-text">
+                  Escuchamos, proponemos y diseñamos junto a ustedes,
+                  transformando ideas en experiencias reales.
+                </p>
 
-              <p class="text-lg lg:text-xl text-white/70 leading-relaxed info-text">
-                Cada proyecto es el resultado de sensibilidad, técnica y un
-                <span class="font-semibold text-white">compromiso absoluto</span>
-                por materializar exactamente lo que imaginan.
-              </p>
+                <p class="text-lg lg:text-xl text-white/70 leading-relaxed info-text">
+                  Cada proyecto es el resultado de sensibilidad, técnica y un
+                  <span class="font-semibold text-white">compromiso absoluto</span>
+                  por materializar exactamente lo que imaginan.
+                </p>
 
+              </div>
+              <div class="hidden sm:flex items-center order-1 sm:order-2 info-image">
+                <img src="@/assets/1_4.jpeg" alt="" class="rounded-xl">
+              </div>
             </div>
-            <div class="flex items-center order-1 sm:order-2 info-image">
-              <img src="@/assets/1_4.jpeg" alt="" class="rounded-md">
+            <div class="scroll-down bottom-28 sm:bottom-10">
+              <span></span>
+              <span></span>
             </div>
           </div>
+
         </section>
 
         <section class="s3 w-full h-screen bg-black text-white/90 absolute z-3 overflow-hidden">
-          <div class="px-4 pt-28 lg:px-10 space-y-16 relative services">
-            <div
-                id="services-title"
-                class="services-title text-3xl lg:text-5xl font-semibold text-white text-center tracking-wide pb-4"
-            >
-              Servicios
-            </div>
-            <div class="sub-content pr-4 lg:pr-10" id="sub1">
-              <div class="w-full h-full grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-16 font-medium">
-                <div class="w-full h-full relative flex flex-col sm:justify-center gap-4 order-2 lg:order-1">
-                  <div class="text-2xl lg:text-4xl font-semibold text-yellow-400">
-                    Iluminación Arquitectónica
-                  </div>
-
-                  <div class="italic text-xl lg:text-2xl font-medium text-white/90">
-                    "La arquitectura cobra vida cuando la luz la interpreta".
-                  </div>
-
-                  <div class="text-base lg:text-lg text-white/70 leading-relaxed">
-                    Creamos composiciones lumínicas que enfatizan carácter, profundidad y elegancia,
-                    generando atmósferas sofisticadas y memorables.
-                  </div>
-                </div>
-                <div class="flex items-center order-1 lg:order-2">
-                  <div class="sm:max-w-lg lg:max-w-full mx-auto">
-                    <img src="@/assets/1_4.jpeg" alt="" class="rounded-md">
-                  </div>
-                </div>
+          <div class="w-full h-full relative">
+            <div class="px-4 pt-20 sm:pt-28 lg:px-10 space-y-16 relative services">
+              <div
+                  id="services-title"
+                  class="services-title text-3xl lg:text-5xl font-semibold text-white text-center tracking-wide lg:pb-4"
+              >
+                Servicios
               </div>
+              <div class="sub-content pr-4 lg:pr-10" id="sub1">
+                <div class="w-full h-full grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-16 font-medium">
+                  <div class="w-full h-full relative flex flex-col sm:justify-center gap-4 order-2 lg:order-1">
+                    <div class="text-2xl lg:text-4xl font-semibold text-yellow-400">
+                      Iluminación Arquitectónica
+                    </div>
 
-            </div>
-            <div class="sub-content pr-4 lg:pr-10" id="sub2">
-              <div class="w-full h-full grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-16 font-medium">
-                <div class="flex items-center">
-                  <div class="sm:max-w-lg lg:max-w-full mx-auto ">
-                    <img src="@/assets/1_5.jpeg" alt="" class="rounded-md">
-                  </div>
-                </div>
-                <div class="w-full h-full relative  flex flex-col sm:justify-center gap-4">
-                  <div class="text-2xl lg:text-4xl font-semibold text-yellow-400">
-                    Iluminación Puntual
-                  </div>
+                    <div class="italic text-xl lg:text-2xl font-medium text-white/90">
+                      "La arquitectura cobra vida cuando la luz la interpreta".
+                    </div>
 
-                  <div class="italic text-xl lg:text-2xl font-medium text-white/90">
-                    "Detalle que eleva el nivel de tu boda".
+                    <div class="text-base lg:text-lg text-white/70 leading-relaxed">
+                      Creamos composiciones lumínicas que enfatizan carácter, profundidad y elegancia,
+                      generando atmósferas sofisticadas y memorables.
+                    </div>
                   </div>
-
-                  <div class="text-base lg:text-lg text-white/70 leading-relaxed">
-                    Cuando las flores dependen solo de iluminación ambiental, sus colores se apagan y su
-                    impacto visual se pierde. La iluminación puntual es esencial para devolverles brillo y vida,
-                    logrando que cada arreglo luzca como debe y que la inversión realmente se perciba y se
-                    disfrute.
+                  <div class="flex items-center order-1 lg:order-2">
+                    <div class="sm:max-w-lg lg:max-w-full mx-auto">
+                      <img src="@/assets/1_4.jpeg" alt="" class="rounded-xl">
+                    </div>
                   </div>
                 </div>
 
               </div>
+              <div class="sub-content pr-4 lg:pr-10" id="sub2">
+                <div class="w-full h-full grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-16 font-medium">
+                  <div class="flex items-center">
+                    <div class="sm:max-w-lg lg:max-w-full mx-auto ">
+                      <img src="@/assets/1_5.jpeg" alt="" class="rounded-xl">
+                    </div>
+                  </div>
+                  <div class="w-full h-full relative  flex flex-col sm:justify-center gap-4">
+                    <div class="text-2xl lg:text-4xl font-semibold text-yellow-400">
+                      Iluminación Puntual
+                    </div>
 
-            </div>
-            <div class="sub-content pr-4 lg:pr-10" id="sub3">
-              <div class="w-full h-full grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-16 font-medium">
-                <div class="w-full h-full relative flex flex-col sm:justify-center gap-4 order-2 lg:order-1">
-                  <div class="text-2xl lg:text-4xl font-semibold text-yellow-400">
-                    Iluminación a Paisajismo
-                  </div>
+                    <div class="italic text-xl lg:text-2xl font-medium text-white/90">
+                      "Detalle que eleva el nivel de tu boda".
+                    </div>
 
-                  <div class="italic text-xl lg:text-2xl font-medium text-white/90">
-                    "La naturaleza también se diseña con luz".
-                  </div>
-
-                  <div class="text-base lg:text-lg text-white/70 leading-relaxed">
-                    Diseñamos esquemas lumínicos que realzan la belleza de jardines y áreas verdes,
-                    destacando formas, alturas y texturas con elegancia.
-                  </div>
-                </div>
-                <div class="flex items-center order-1 lg:order-2">
-                  <div class="sm:max-w-lg lg:max-w-full mx-auto">
-                    <img src="@/assets/1_3.jpeg" alt="" class="rounded-md">
-                  </div>
-                </div>
-              </div>
-
-            </div>
-            <div class="sub-content pr-4 lg:pr-10" id="sub4">
-              <div class="w-full h-full grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-16 font-medium">
-                <div class="flex items-center">
-                  <div class="sm:max-w-lg lg:max-w-full mx-auto">
-                    <img src="@/assets/1_2.jpeg" alt="" class="rounded-md">
-                  </div>
-                </div>
-                <div class="w-full h-full relative  flex flex-col sm:justify-center gap-4">
-                  <div class="text-2xl lg:text-4xl font-semibold text-yellow-400">
-                    Drapeados Textiles
+                    <div class="text-base lg:text-lg text-white/70 leading-relaxed">
+                      Cuando las flores dependen solo de iluminación ambiental, sus colores se apagan y su
+                      impacto visual se pierde. La iluminación puntual es esencial para devolverles brillo y vida,
+                      logrando que cada arreglo luzca como debe y que la inversión realmente se perciba y se
+                      disfrute.
+                    </div>
                   </div>
 
-                  <div class="italic text-xl lg:text-2xl font-medium text-white/90">
-                    "Texturas que envuelven, formas que transforman".
-                  </div>
-
-                  <div class="text-base lg:text-lg text-white/70 leading-relaxed">
-                    Creamos composiciones con tela que redefinen techos y áreas completas, generando
-                    escenarios elegantes, envolventes y visualmente impactantes.
-                  </div>
                 </div>
 
               </div>
+              <div class="sub-content pr-4 lg:pr-10" id="sub3">
+                <div class="w-full h-full grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-16 font-medium">
+                  <div class="w-full h-full relative flex flex-col sm:justify-center gap-4 order-2 lg:order-1">
+                    <div class="text-2xl lg:text-4xl font-semibold text-yellow-400">
+                      Iluminación a Paisajismo
+                    </div>
 
+                    <div class="italic text-xl lg:text-2xl font-medium text-white/90">
+                      "La naturaleza también se diseña con luz".
+                    </div>
+
+                    <div class="text-base lg:text-lg text-white/70 leading-relaxed">
+                      Diseñamos esquemas lumínicos que realzan la belleza de jardines y áreas verdes,
+                      destacando formas, alturas y texturas con elegancia.
+                    </div>
+                  </div>
+                  <div class="flex items-center order-1 lg:order-2">
+                    <div class="sm:max-w-lg lg:max-w-full mx-auto">
+                      <img src="@/assets/1_3.jpeg" alt="" class="rounded-xl">
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+              <div class="sub-content pr-4 lg:pr-10" id="sub4">
+                <div class="w-full h-full grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-16 font-medium">
+                  <div class="flex items-center">
+                    <div class="sm:max-w-lg lg:max-w-full mx-auto">
+                      <img src="@/assets/1_2.jpeg" alt="" class="rounded-xl">
+                    </div>
+                  </div>
+                  <div class="w-full h-full relative  flex flex-col sm:justify-center gap-4">
+                    <div class="text-2xl lg:text-4xl font-semibold text-yellow-400">
+                      Drapeados Textiles
+                    </div>
+
+                    <div class="italic text-xl lg:text-2xl font-medium text-white/90">
+                      "Texturas que envuelven, formas que transforman".
+                    </div>
+
+                    <div class="text-base lg:text-lg text-white/70 leading-relaxed">
+                      Creamos composiciones con tela que redefinen techos y áreas completas, generando
+                      escenarios elegantes, envolventes y visualmente impactantes.
+                    </div>
+                  </div>
+
+                </div>
+
+              </div>
+
+
+            </div>
+            <div class="scroll-down z-10 bottom-28 sm:bottom-17">
+              <span></span>
+              <span></span>
             </div>
           </div>
-
         </section>
       </div>
     </div>
@@ -290,4 +307,43 @@ body { margin: 0; font-family: sans-serif; overflow-x: hidden; background: #000;
   overflow: visible;
 }
 .sub-content { position: absolute; opacity: 0; }
+
+.scroll-down {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.scroll-down span {
+  display: block;
+  width: 15px;
+  height: 15px;
+  border-bottom: 2px solid #fff;
+  border-right: 2px solid #fff;
+  transform: rotate(45deg);
+  margin: -5px; /* Para que queden pegaditos como en tu imagen */
+  animation: scroll-arrows 2s infinite;
+}
+
+/* Retraso para el segundo chevron para crear el efecto cascada */
+.scroll-down span:nth-child(2) {
+  animation-delay: -0.2s;
+}
+
+@keyframes scroll-arrows {
+  0% {
+    opacity: 0;
+    transform: rotate(45deg) translate(-10px, -10px);
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: rotate(45deg) translate(10px, 10px);
+  }
+}
 </style>

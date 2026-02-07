@@ -2,6 +2,7 @@ import {createRouter, createWebHistory} from 'vue-router'
 import Home from '@/views/Home.vue'
 import About from "@/views/About.vue";
 import Faq from "@/views/Faq.vue";
+import ContactUs from "@/views/ContactUs.vue";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -31,6 +32,15 @@ const router = createRouter({
             meta: {
                 transition: 'fade',
                 title: 'Yuzam Lighting | Preguntas frecuentes'
+            },
+        },
+        {
+            path: '/contactanos',
+            name: 'contact-us',
+            component: ContactUs,
+            meta: {
+                transition: 'fade',
+                title: 'Yuzam Lighting | Contáctanos'
             },
         },
     ],

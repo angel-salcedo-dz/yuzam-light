@@ -20,7 +20,7 @@ let showSidebar = ref(false)
               <router-link @click="showSidebar = false" to="/" class="hover:text-zinc-400 transition-all duration-200 py-4 border-b border-zinc-800">Inicio</router-link>
               <router-link @click="showSidebar = false" to="/quienes-somos" class="hover:text-zinc-400 transition-all duration-200 py-4 border-b border-zinc-800">Quiénes somos</router-link>
               <router-link @click="showSidebar = false" to="/preguntas-frecuentes" class="hover:text-zinc-400 transition-all duration-200 py-4 border-b border-zinc-800">Preguntas frecuentes</router-link>
-              <router-link @click="showSidebar = false" to="#" class="hover:text-zinc-400 transition-all duration-200 pt-4">Contacto</router-link>
+              <router-link @click="showSidebar = false" to="/contactanos" class="hover:text-zinc-400 transition-all duration-200 pt-4">Contáctanos</router-link>
             </div>
           </div>
         </div>
@@ -31,17 +31,17 @@ let showSidebar = ref(false)
     <div>
       <router-link to="/">
         <div class="max-w-[3rem]">
-          <img src="@/assets/main_icon.jpg" alt="" class="rounded-md">
+          <img src="@/assets/main_icon.jpg" alt="" class="rounded-full">
         </div>
       </router-link>
     </div>
     <div class="hidden lg:flex items-center gap-6">
       <router-link to="/quienes-somos" class="hover:text-zinc-400 transition-all duration-200">Quiénes somos</router-link>
       <router-link to="/preguntas-frecuentes" class="hover:text-zinc-400 transition-all duration-200">Preguntas frecuentes</router-link>
-      <router-link to="#" class="hover:text-zinc-400 transition-all duration-200">Contacto</router-link>
+      <router-link to="/contactanos" class="hover:text-zinc-400 transition-all duration-200">Contáctanos</router-link>
     </div>
     <div class="block lg:hidden">
-      <button @click="showSidebar = true" class="text-white/90 p-2 bg-zinc-200/20 rounded-md active:scale-95 z-10">
+      <button @click="showSidebar = true" class="text-white/90 p-2 bg-zinc-200/10 rounded-full active:scale-95 z-10">
         <Bars3Icon class="size-8"/>
       </button>
     </div>
