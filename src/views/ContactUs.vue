@@ -4,6 +4,7 @@ import {gsap} from "gsap";
 import {ScrollSmoother} from "gsap/ScrollSmoother";
 import {ScrollTrigger} from "gsap/ScrollTrigger";
 import {onMounted, ref} from "vue";
+import { VueRecaptcha } from 'vue-recaptcha';
 
 import {
   TransitionRoot,
@@ -17,6 +18,22 @@ import moment from "moment";
 gsap.registerPlugin(ScrollSmoother, ScrollTrigger);
 
 const isOpen = ref(false)
+const siteKey = "6LdhY2QsAAAAADkqDrFnuFojsEGEZYt_2IJ8prbc";
+const recaptchaRef = ref(null); // Para resetearlo después
+
+const handleExecute = () => {
+  // Ejecuta el captcha invisible manualmente
+  recaptchaRef.value.execute();
+};
+
+const onVerify = (token) => {
+  // Cuando el usuario resuelve el captcha, ejecutamos el envío
+  sendForm(token);
+};
+
+const onExpired = () => {
+  console.log("El captcha expiró");
+};
 
 function closeModal() {
   isOpen.value = false
@@ -51,7 +68,7 @@ let form = ref({
   comments: ''
 });
 
-let sendForm = () => {
+let sendForm = (token) => {
   if (isLoading.value) {
     return;
   }
@@ -65,7 +82,8 @@ let sendForm = () => {
       'Fecha del evento': form.value.date,
       'Lugar del evento': form.value.place,
       'Tipo de celebración': form.value.type,
-      'Cuéntanos tu idea': form.value.comments
+      'Cuéntanos tu idea': form.value.comments,
+      'g-recaptcha-response': token
     }, {
       headers: {
         'Accept': 'application/json'
@@ -145,7 +163,7 @@ let sendForm = () => {
               </div>
             </div>
             <div class="lg:col-span-2 pb-6 lg:pb-0 order-1 lg:order-2">
-              <form @submit.prevent="sendForm" class="rounded-xl space-y-4">
+              <form @submit.prevent="handleExecute" class="rounded-xl space-y-4">
                 <div
                     class="text-3xl lg:text-5xl font-semibold text-white tracking-wide pb-4 text-left"
                 >
@@ -194,6 +212,13 @@ let sendForm = () => {
                 <div v-if="hasFormError" class="text-base text-left text-red-500">
                     {{ formError }}
                 </div>
+                <VueRecaptcha
+                    ref="recaptchaRef"
+                    size="invisible"
+                    :sitekey="siteKey"
+                    @verify="onVerify"
+                    @expired="onExpired"
+                />
                 <div class="flex justify-end">
                   <button type="submit" :disabled="isLoading"
                           class="px-6 py-3 rounded-md bg-yellow-400 font-semibold text-black text-base hover:cursor-pointer hover:bg-yellow-500 transition duration-200 flex items-center">
