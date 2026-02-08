@@ -87,9 +87,9 @@ onMounted(() => {
           ease: "power1.inOut"
         }).to('.services', {
           opacity: 1
-        }, 5)
+        }, 6.1)
 
-        mainTl.to("#sub1", { opacity: 1, y: -20, duration: 1 }, 5)
+        mainTl.to("#sub1", { opacity: 1, y: -20, duration: 1 }, 6.1)
             .to("#sub1", { opacity: 0, y: -40, duration: 1 }, '+=1.2') // Pausa de 1 unidad de scroll
             .to("#sub2", { opacity: 1, y: -20, duration: 1 })
             .to("#sub2", { opacity: 0, y: -40, duration: 1 }, '+=1.2')
