@@ -204,7 +204,7 @@ let sendForm = (token) => {
                 <div>
                   <input v-model="form.type" required name="Tipo de celebración" id="Tipo de celebración" type="text"
                          class="mt-2 block bg-zinc-700 rounded-md w-full text-base px-4 py-2 text-white font-semibold placeholder-white/70"
-                         placeholder="Tipo de celebración (e.g. boda, cóctel, recepción, evento privado)">
+                         placeholder="Tipo de celebración (boda, cóctel, recepción, evento privado)">
                 </div>
                 <div>
                   <textarea v-model="form.comments" required name="Cuéntanos tu idea" id="Cuéntanos tu idea" rows="6"

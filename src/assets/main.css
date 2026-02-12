@@ -4,3 +4,8 @@
 .swiper-wrapper {
     transition-timing-function: linear !important;
 }
+
+/* Quita el scoped o usa :deep() */
+:deep(.swiper-wrapper) {
+    transition-timing-function: linear !important;
+}
