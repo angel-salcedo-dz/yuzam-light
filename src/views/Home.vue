@@ -1,18 +1,62 @@
 <script setup>
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ScrollSmoother } from "gsap/ScrollSmoother";
-import {onMounted} from "vue";
+import {Swiper, SwiperSlide} from "swiper/vue";
+import {Autoplay} from "swiper/modules";
+import 'swiper/css';
 import {gsap} from "gsap";
-import Header from "@/components/Header.vue";
+import {ScrollTrigger} from "gsap/ScrollTrigger";
+import {ScrollSmoother} from "gsap/ScrollSmoother";
+import {ScrollToPlugin} from "gsap/ScrollToPlugin";
+import image_1 from "@/assets/1.jpeg";
+import image_2 from "@/assets/1_0.jpeg";
+import image_3 from "@/assets/1_1.jpeg";
+import image_4 from "@/assets/1_2.jpeg";
+import image_5 from "@/assets/1_3.jpeg";
+import {onMounted, ref} from "vue";
 import MainImage from "@/assets/1.jpeg";
-import {ChevronDoubleDownIcon, ArrowDownCircleIcon} from "@heroicons/vue/24/outline";
+import Header from "@/components/Header.vue";
+import VueEasyLightbox from 'vue-easy-lightbox/external-css'
+import 'vue-easy-lightbox/external-css/vue-easy-lightbox.css'
 
-gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
+gsap.registerPlugin(ScrollTrigger, ScrollSmoother, ScrollToPlugin);
+
+const modules = [Autoplay]
+
+const images = [
+  image_1,
+  image_2,
+  image_3,
+  image_4,
+  image_5,
+];
+
+let smootherInstance;
+let mainTl;
+let secondTl;
+let thirdTl;
+
+const visibleRef = ref(false)
+const indexRef = ref(0)
+
+const showImg = (index) => {
+  indexRef.value = index
+  visibleRef.value = true
+
+  if (smootherInstance) {
+    smootherInstance.paused(true)
+  }
+}
+
+const onHide = () => {
+  visibleRef.value = false
+
+  if (smootherInstance) {
+    smootherInstance.paused(false)
+  }
+}
 
 
 onMounted(() => {
   let mm = gsap.matchMedia();
-
 
   mm.add(
       {
@@ -23,22 +67,14 @@ onMounted(() => {
       },
       (context) => {
         // context.conditions has a boolean property for each condition defined above indicating if it's matched or not.
-        let { isDesktop, isMobile, isTablet } = context.conditions;
+        let {isDesktop, isMobile, isTablet} = context.conditions;
 
-        const smoother = ScrollSmoother.create({
+        smootherInstance = ScrollSmoother.create({
           wrapper: "#smooth-wrapper",
           content: "#smooth-content",
           smooth: 1.5,
           normalizeScroll: true // Evita conflictos en dispositivos táctiles
         });
-
-        gsap.set(['.s2', '.s3'], {
-          yPercent: 100
-        })
-
-        gsap.set(['.services'], {
-          opacity: 0.4
-        })
 
         gsap.set(['.info-text'], {
           opacity: 0,
@@ -50,69 +86,158 @@ onMounted(() => {
           xPercent: 10
         })
 
-        const mainTl = gsap.timeline({
+        gsap.set(['.services-title'], {
+          opacity: 0.2,
+        })
+
+        gsap.set(['.sub-1', '.sub-3'], {
+          opacity: 0,
+          xPercent: 10,
+        })
+
+        gsap.set(['.sub-2', '.sub-4'], {
+          opacity: 0,
+          xPercent: -10,
+        })
+
+        mainTl = gsap.timeline({
           scrollTrigger: {
-            trigger: "#content",
+            id: "mainPin", // <--- ID fundamental para encontrarlo después
+            trigger: "#first-content",
             start: "top top",
-            end: "+=600%", // Duración total de toda la experiencia
+            end: "+=500%", // Duración total de toda la experiencia
             pin: true,
             scrub: 1,
-            invalidateOnRefresh: true
           }
         });
 
-        mainTl.to(".s1 .title", { xPercent: isMobile ? -400 : -250, duration: 1 })
-            .to(".s1 .description", { y: 100, opacity: 0, stagger: 0.3}, 0.1)
+        mainTl.to(".s1 .title", {xPercent: isMobile ? -350 : -250, duration: isMobile ? 12 : 15})
+            .to(".s1 .description", {
+              y: 100,
+              opacity: 0,
+              stagger: isMobile ? 2 : 2.5,
+              duration: isMobile ? 4 : 5,
+              ease: "power2.out",
+            }, isMobile ? 1 : 1.5)
 
-        mainTl.to(".s2", {
-          yPercent: 0,
-          duration: 2,
-          ease: "power1.inOut"
-        }).to(".info-text", {
+        ScrollTrigger.create({
+          trigger: "#second-content",
+          start: "top top",
+          pin: true,
+          pinSpacing: true, // 🔥 importante
+          end: "+=150%",
+          scrub: 1,
+        });
+
+        gsap.to(".info-text", {
           opacity: 1,
           xPercent: 0,
           stagger: 0.1,
-          duration: 1.2
-        }, 2.3).to(".info-image", {
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: "#second-content",
+            start: "top 50%", // Empieza mucho antes de llegar arriba
+            end: "top top",   // Termina justo cuando se activa el Pin
+            scrub: 1.5
+          }
+        });
+
+        gsap.to(".info-image", {
           opacity: 1,
           xPercent: 0,
-          duration: 1.2
-        }, 2.3);
+          stagger: 0.1,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: "#second-content",
+            start: "top 50%", // Empieza mucho antes de llegar arriba
+            end: "top top",   // Termina justo cuando se activa el Pin
+            scrub: 1.5
+          }
+        });
 
-        mainTl.to({}, { duration: 1.2 });
+        gsap.to(".services-title", {
+          opacity: 1,
+          xPercent: 0,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: "#third-content",
+            start: "top 75%", // Empieza mucho antes de llegar arriba
+            end: "top top",   // Termina justo cuando se activa el Pin
+            scrub: 1.5
+          }
+        });
 
-        mainTl.to(".s3", {
-          yPercent: 0,
-          duration: 2,
-          ease: "power1.inOut"
-        }).to('.services', {
-          opacity: 1
-        }, 6.1)
+        gsap.to(".sub-1", {
+          opacity: 1,
+          xPercent: 0,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: "#third-content",
+            start: "top 75%", // Empieza mucho antes de llegar arriba
+            end: "top top",   // Termina justo cuando se activa el Pin
+            scrub: 1.5
+          }
+        });
 
-        mainTl.to("#sub1", { opacity: 1, y: -20, duration: 1 }, 6.1)
-            .to("#sub1", { opacity: 0, y: -40, duration: 1 }, '+=1.2') // Pausa de 1 unidad de scroll
-            .to("#sub2", { opacity: 1, y: -20, duration: 1 })
-            .to("#sub2", { opacity: 0, y: -40, duration: 1 }, '+=1.2')
-            .to("#sub3", { opacity: 1, y: -20, duration: 1 })
-            .to("#sub3", { opacity: 0, y: -20, duration: 1 }, '+=1.2')
-            .to("#sub4", { opacity: 1, y: -20, duration: 1 })
-            .to(".scroll-down", { opacity: 0, duration: 0.2 }, '<')
+        gsap.to(".sub-2", {
+          opacity: 1,
+          xPercent: 0,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: "#main-sub-2",
+            start: "top 75%", // Empieza mucho antes de llegar arriba
+            end: "top top",   // Termina justo cuando se activa el Pin
+            scrub: 1.5
+          }
+        });
 
-        mainTl.to({}, { duration: 2 });
-        mainTl.to({}, { duration: 1 });
+        gsap.to(".sub-3", {
+          opacity: 1,
+          xPercent: 0,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: "#main-sub-3",
+            start: "top 75%", // Empieza mucho antes de llegar arriba
+            end: "top top",   // Termina justo cuando se activa el Pin
+            scrub: 1.5
+          }
+        });
 
-      }
-  );
+        gsap.to(".sub-4", {
+          opacity: 1,
+          xPercent: 0,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: "#main-sub-4",
+            start: "top 75%", // Empieza mucho antes de llegar arriba
+            end: "+=40%",   // Termina justo cuando se activa el Pin
+            scrub: 1.5
+          }
+        });
 
-
+      })
 })
+
+const onSwiperInit = (swiper) => {
+  // Esperamos a que el DOM se asiente tras el Pin de GSAP
+  setTimeout(() => {
+    swiper.update();
+    if (swiper.autoplay) {
+      swiper.autoplay.start();
+    }
+  }, 100);
+};
+
+const scrollToThird = () => {
+  smootherInstance.scrollTo("#third-content", true);
+};
 </script>
 
 <template>
-  <Header />
-  <div id="smooth-wrapper" class="overflow-x-hidden">
-    <div id="smooth-content" class="overflow-x-hidden">
-      <div id="content" class="relative ">
+  <Header/>
+  <div id="smooth-wrapper" class="overflow-x-hidden !bg-black">
+    <div id="smooth-content" class="overflow-x-hidden !bg-black">
+      <div id="first-content">
         <section class="s1 w-full h-screen bg-cover bg-no-repeat overflow-hidden absolute z-1">
           <div class="hero bg-cover relative z-1 h-full"
                :style="{backgroundImage: 'url(' + MainImage + ')'}">
@@ -131,168 +256,295 @@ onMounted(() => {
           </div>
 
         </section>
+      </div>
+      <div id="second-content" class="bg-black p-4 relative z-2 h-screen">
+        <div id="s2-sub"
+             class="s2 w-full h-full grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-16 px-4 pt-24 lg:pt-12 lg:px-10">
+          <div class="w-full h-full flex flex-col sm:justify-center gap-6 max-w-3xl order-2 sm:order-1">
 
-        <section id="about-us" class="s2 w-full h-screen bg-black overflow-hidden absolute text-white/90 text-xl lg:text-2xl xl:text-3xl z-2">
-          <div class="relative w-full h-full">
-            <div id="s2-sub" class="s2-sub w-full h-full grid grid-cols-1 sm:grid-cols-2 sm:-mt-10 gap-4 lg:gap-16 px-4 pt-24 lg:px-10">
-              <div class="w-full h-full flex flex-col sm:justify-center gap-6 max-w-3xl order-2 sm:order-1">
+            <h2 class="text-3xl lg:text-5xl italic text-white leading-tight info-text">
+              No “colocamos luces”,
+              <span class="font-semibold">diseñamos atmósferas con intención</span>.
+            </h2>
 
-                <h2 class="text-3xl lg:text-5xl italic text-white leading-tight info-text">
-                  No “colocamos luces”,
-                  <span class="font-semibold">diseñamos atmósferas con intención</span>.
-                </h2>
+            <p class="text-lg lg:text-xl text-white/80 leading-relaxed info-text">
+              En <span class="font-semibold text-yellow-400">Yuzam Lighting</span> hemos sido parte de más de
+              <span class="font-semibold text-white">500 bodas</span>.
+              Entendemos lo que este día significa para ustedes.
+            </p>
 
-                <p class="text-lg lg:text-xl text-white/80 leading-relaxed info-text">
-                  En <span class="font-semibold text-yellow-400">Yuzam Lighting</span> hemos sido parte de más de
-                  <span class="font-semibold text-white">500 bodas</span>.
-                  Entendemos lo que este día significa para ustedes.
-                </p>
+            <p class="text-lg lg:text-xl text-white/70 leading-relaxed info-text">
+              Escuchamos, proponemos y diseñamos junto a ustedes,
+              transformando ideas en experiencias reales.
+            </p>
 
-                <p class="text-lg lg:text-xl text-white/70 leading-relaxed info-text">
-                  Escuchamos, proponemos y diseñamos junto a ustedes,
-                  transformando ideas en experiencias reales.
-                </p>
+            <p class="text-lg lg:text-xl text-white/70 leading-relaxed info-text">
+              Cada proyecto es el resultado de sensibilidad, técnica y un
+              <span class="font-semibold text-white">compromiso absoluto</span>
+              por materializar exactamente lo que imaginan.
+            </p>
 
-                <p class="text-lg lg:text-xl text-white/70 leading-relaxed info-text">
-                  Cada proyecto es el resultado de sensibilidad, técnica y un
-                  <span class="font-semibold text-white">compromiso absoluto</span>
-                  por materializar exactamente lo que imaginan.
-                </p>
+          </div>
+          <div class="hidden sm:flex items-center order-1 sm:order-2 info-image">
+            <img src="@/assets/1_4.jpeg" alt="" class="rounded-xl">
+          </div>
+        </div>
+        <button
+            @click="scrollToThird"
+            class="scroll-down bottom-20 sm:bottom-12 hover:cursor-pointer !p-4">
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+      <div id="third-content" class="relative z-4 bg-black space-y-20 px-4 pt-20 sm:pt-28 lg:px-10 pb-20 sm:pb-28">
+        <div
+            id="services-title"
+            class="services-title text-3xl lg:text-5xl font-semibold text-white text-center tracking-wide"
+        >
+          Servicios
+        </div>
+        <div class="main-sub-1" id="main-sub-1">
+          <div class="sub-1" id="sub-1">
+            <div class="w-full h-full grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-16 font-medium">
+              <div class="w-full h-full relative flex flex-col sm:justify-center gap-4 order-2 lg:order-1">
+                <div class="text-2xl lg:text-4xl font-semibold text-yellow-400">
+                  Iluminación Arquitectónica
+                </div>
 
+                <div class="italic text-xl lg:text-2xl font-medium text-white/90">
+                  "La arquitectura cobra vida cuando la luz la interpreta".
+                </div>
+
+                <div class="text-base lg:text-lg text-white/70 leading-relaxed">
+                  Creamos composiciones lumínicas que enfatizan carácter, profundidad y elegancia,
+                  generando atmósferas sofisticadas y memorables.
+                </div>
               </div>
-              <div class="hidden sm:flex items-center order-1 sm:order-2 info-image">
-                <img src="@/assets/1_4.jpeg" alt="" class="rounded-xl">
+              <div class="flex items-center order-1 lg:order-2 !rounded-xl">
+                <div class="w-full max-w-full !rounded-xl">
+                  <swiper
+                      :tag="'main-1'"
+                      :slides-per-view="3"
+                      :space-between="20"
+                      :direction="'horizontal'"
+                      :centered-slides="true"
+                      :loop="true"
+                      :speed="8000"
+                      :breakpoints="{
+                                320: {
+                                  slidesPerView: 1,
+                                },
+                                1280: {
+                                  slidesPerView: 2,
+                                }
+                              }"
+                      :modules="modules"
+                      :observer="true" :observeParents="true" :observeSlideChildren="true"
+                      @swiper="onSwiperInit"
+                      :autoplay="{
+                                delay: 0,
+                                enabled: true,
+                                pauseOnMouseEnter: false,
+                                disableOnInteraction: false,
+                              }
+" class="h-82 rounded-xl"
+                  >
+                    <swiper-slide v-for="(image, index) in images">
+                      <img :src="image" :key="'1-' + index" alt="" class="w-full h-full object-cover rounded-xl hover:cursor-pointer" @click="() => showImg(index)">
+                    </swiper-slide>
+                  </swiper>
+                </div>
               </div>
-            </div>
-            <div class="scroll-down bottom-28 sm:bottom-10">
-              <span></span>
-              <span></span>
             </div>
           </div>
-
-        </section>
-
-        <section class="s3 w-full h-screen bg-black text-white/90 absolute z-3 overflow-hidden">
-          <div class="w-full h-full relative">
-            <div class="px-4 pt-20 sm:pt-28 lg:px-10 space-y-16 relative services">
-              <div
-                  id="services-title"
-                  class="services-title text-3xl lg:text-5xl font-semibold text-white text-center tracking-wide lg:pb-4"
-              >
-                Servicios
-              </div>
-              <div class="sub-content pr-4 lg:pr-10" id="sub1">
-                <div class="w-full h-full grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-16 font-medium">
-                  <div class="w-full h-full relative flex flex-col sm:justify-center gap-4 order-2 lg:order-1">
-                    <div class="text-2xl lg:text-4xl font-semibold text-yellow-400">
-                      Iluminación Arquitectónica
-                    </div>
-
-                    <div class="italic text-xl lg:text-2xl font-medium text-white/90">
-                      "La arquitectura cobra vida cuando la luz la interpreta".
-                    </div>
-
-                    <div class="text-base lg:text-lg text-white/70 leading-relaxed">
-                      Creamos composiciones lumínicas que enfatizan carácter, profundidad y elegancia,
-                      generando atmósferas sofisticadas y memorables.
-                    </div>
-                  </div>
-                  <div class="flex items-center order-1 lg:order-2">
-                    <div class="sm:max-w-lg lg:max-w-full mx-auto">
-                      <img src="@/assets/1_4.jpeg" alt="" class="rounded-xl">
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-              <div class="sub-content pr-4 lg:pr-10" id="sub2">
-                <div class="w-full h-full grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-16 font-medium">
-                  <div class="flex items-center">
-                    <div class="sm:max-w-lg lg:max-w-full mx-auto ">
-                      <img src="@/assets/1_5.jpeg" alt="" class="rounded-xl">
-                    </div>
-                  </div>
-                  <div class="w-full h-full relative  flex flex-col sm:justify-center gap-4">
-                    <div class="text-2xl lg:text-4xl font-semibold text-yellow-400">
-                      Iluminación Puntual
-                    </div>
-
-                    <div class="italic text-xl lg:text-2xl font-medium text-white/90">
-                      "Detalle que eleva el nivel de tu boda".
-                    </div>
-
-                    <div class="text-base lg:text-lg text-white/70 leading-relaxed">
-                      Cuando las flores dependen solo de iluminación ambiental, sus colores se apagan y su
-                      impacto visual se pierde. La iluminación puntual es esencial para devolverles brillo y vida,
-                      logrando que cada arreglo luzca como debe y que la inversión realmente se perciba y se
-                      disfrute.
-                    </div>
-                  </div>
+        </div>
+        <div class="main-sub-2" id="main-sub-2">
+          <div class="sub-2" id="sub-2">
+            <div class="w-full h-full grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-16 font-medium">
+              <div class="flex items-center">
+                <div class="w-full max-w-full !rounded-xl">
+                  <swiper
+                      :tag="'main-2'"
+                      :slides-per-view="3"
+                      :space-between="20"
+                      :direction="'horizontal'"
+                      :centered-slides="true"
+                      :loop="true"
+                      :speed="8000"
+                      :breakpoints="{
+                      320: {
+                        slidesPerView: 1,
+                      },
+                      1280: {
+                        slidesPerView: 2,
+                      }
+                    }"
+                      :modules="modules"
+                      :autoplay="{
+                      delay: 0,
+                      enabled: true,
+                      pauseOnMouseEnter: false,
+                      disableOnInteraction: false,
+                    }" class="h-82 rounded-xl"
+                  >
+                    <swiper-slide v-for="(image, index) in images">
+                      <img :src="image" :key="'2-' + index" alt="" class="w-full h-full object-cover rounded-xl hover:cursor-pointer" @click="() => showImg(index)">
+                    </swiper-slide>
+                  </swiper>
 
                 </div>
-
               </div>
-              <div class="sub-content pr-4 lg:pr-10" id="sub3">
-                <div class="w-full h-full grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-16 font-medium">
-                  <div class="w-full h-full relative flex flex-col sm:justify-center gap-4 order-2 lg:order-1">
-                    <div class="text-2xl lg:text-4xl font-semibold text-yellow-400">
-                      Iluminación a Paisajismo
-                    </div>
-
-                    <div class="italic text-xl lg:text-2xl font-medium text-white/90">
-                      "La naturaleza también se diseña con luz".
-                    </div>
-
-                    <div class="text-base lg:text-lg text-white/70 leading-relaxed">
-                      Diseñamos esquemas lumínicos que realzan la belleza de jardines y áreas verdes,
-                      destacando formas, alturas y texturas con elegancia.
-                    </div>
-                  </div>
-                  <div class="flex items-center order-1 lg:order-2">
-                    <div class="sm:max-w-lg lg:max-w-full mx-auto">
-                      <img src="@/assets/1_3.jpeg" alt="" class="rounded-xl">
-                    </div>
-                  </div>
+              <div class="w-full h-full relative  flex flex-col sm:justify-center gap-4">
+                <div class="text-2xl lg:text-4xl font-semibold text-yellow-400">
+                  Iluminación Puntual
                 </div>
 
-              </div>
-              <div class="sub-content pr-4 lg:pr-10" id="sub4">
-                <div class="w-full h-full grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-16 font-medium">
-                  <div class="flex items-center">
-                    <div class="sm:max-w-lg lg:max-w-full mx-auto">
-                      <img src="@/assets/1_2.jpeg" alt="" class="rounded-xl">
-                    </div>
-                  </div>
-                  <div class="w-full h-full relative  flex flex-col sm:justify-center gap-4">
-                    <div class="text-2xl lg:text-4xl font-semibold text-yellow-400">
-                      Drapeados Textiles
-                    </div>
-
-                    <div class="italic text-xl lg:text-2xl font-medium text-white/90">
-                      "Texturas que envuelven, formas que transforman".
-                    </div>
-
-                    <div class="text-base lg:text-lg text-white/70 leading-relaxed">
-                      Creamos composiciones con tela que redefinen techos y áreas completas, generando
-                      escenarios elegantes, envolventes y visualmente impactantes.
-                    </div>
-                  </div>
-
+                <div class="italic text-xl lg:text-2xl font-medium text-white/90">
+                  "Detalle que eleva el nivel de tu boda".
                 </div>
 
+                <div class="text-base lg:text-lg text-white/70 leading-relaxed">
+                  Cuando las flores dependen solo de iluminación ambiental, sus colores se apagan y su
+                  impacto visual se pierde. La iluminación puntual es esencial para devolverles brillo y vida,
+                  logrando que cada arreglo luzca como debe y que la inversión realmente se perciba y se
+                  disfrute.
+                </div>
               </div>
-
 
             </div>
-            <div class="scroll-down z-10 bottom-28 sm:bottom-17">
-              <span></span>
-              <span></span>
-            </div>
+
           </div>
-        </section>
+        </div>
+        <div class="main-sub-3" id="main-sub-3">
+          <div class="sub-3" id="sub-3">
+            <div class="w-full h-full grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-16 font-medium">
+              <div class="w-full h-full relative flex flex-col sm:justify-center gap-4 order-2 lg:order-1">
+                <div class="text-2xl lg:text-4xl font-semibold text-yellow-400">
+                  Iluminación a Paisajismo
+                </div>
+
+                <div class="italic text-xl lg:text-2xl font-medium text-white/90">
+                  "La naturaleza también se diseña con luz".
+                </div>
+
+                <div class="text-base lg:text-lg text-white/70 leading-relaxed">
+                  Diseñamos esquemas lumínicos que realzan la belleza de jardines y áreas verdes,
+                  destacando formas, alturas y texturas con elegancia.
+                </div>
+              </div>
+              <div class="flex items-center order-1 lg:order-2">
+                <div class="w-full max-w-full !rounded-xl">
+                  <swiper
+                      :tag="'main-3'"
+                      :slides-per-view="3"
+                      :space-between="20"
+                      :direction="'horizontal'"
+                      :centered-slides="true"
+                      :loop="true"
+                      :speed="8000"
+                      :breakpoints="{
+                      320: {
+                        slidesPerView: 1,
+                      },
+                      1280: {
+                        slidesPerView: 2,
+                      }
+                    }"
+                      :modules="modules"
+                      :autoplay="{
+                      delay: 0,
+                      enabled: true,
+                      pauseOnMouseEnter: false,
+                      disableOnInteraction: false,
+                    }" class="h-82 rounded-xl"
+                  >
+                    <swiper-slide v-for="(image, index) in images">
+                      <img :src="image" :key="'3-' + index" alt="" class="w-full h-full object-cover rounded-xl hover:cursor-pointer" @click="() => showImg(index)">
+                    </swiper-slide>
+                  </swiper>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div class="main-sub-4" id="main-sub-4">
+          <div class="sub-4" id="sub-4">
+            <div class="w-full h-full grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-16 font-medium">
+              <div class="flex items-center">
+                <div class="w-full max-w-full !rounded-xl">
+                  <swiper
+                      :tag="'main-4'"
+                      :slides-per-view="3"
+                      :space-between="20"
+                      :direction="'horizontal'"
+                      :centered-slides="true"
+                      :loop="true"
+                      :speed="8000"
+                      :breakpoints="{
+                      320: {
+                        slidesPerView: 1,
+                      },
+                      1280: {
+                        slidesPerView: 2,
+                      }
+                    }"
+                      :modules="modules"
+                      :autoplay="{
+                      delay: 0,
+                      enabled: true,
+                      pauseOnMouseEnter: false,
+                      disableOnInteraction: false,
+                    }" class="h-82 rounded-xl"
+                  >
+                    <swiper-slide v-for="(image, index) in images">
+                      <img :src="image" :key="'4-' + index" alt="" class="w-full h-full object-cover rounded-xl hover:cursor-pointer" @click="() => showImg(index)">
+                    </swiper-slide>
+                  </swiper>
+
+                </div>
+              </div>
+              <div class="w-full h-full relative  flex flex-col sm:justify-center gap-4">
+                <div class="text-2xl lg:text-4xl font-semibold text-yellow-400">
+                  Drapeados Textiles
+                </div>
+
+                <div class="italic text-xl lg:text-2xl font-medium text-white/90">
+                  "Texturas que envuelven, formas que transforman".
+                </div>
+
+                <div class="text-base lg:text-lg text-white/70 leading-relaxed">
+                  Creamos composiciones con tela que redefinen techos y áreas completas, generando
+                  escenarios elegantes, envolventes y visualmente impactantes.
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
+
+  <vue-easy-lightbox
+      :visible="visibleRef"
+      :imgs="images"
+      :index="indexRef"
+      @hide="onHide"
+      :move-disabled="true"
+      :zoom-disabled="false"
+      :rotate-disabled="true"
+      :pinch-disabled="false"
+      :loop="true"
+  >
+    <template v-slot:prev-btn="{ next }">
+    </template>
+    <template v-slot:next-btn="{ next }">
+    </template>
+  </vue-easy-lightbox>
 </template>
 
 <style scoped>
@@ -302,11 +554,12 @@ onMounted(() => {
   text-align: center;
   margin: 0;
 }
-body { margin: 0; font-family: sans-serif; overflow-x: hidden; background: #000; color: white; }
-#smooth-content {
-  overflow: visible;
+
+#third-content {
+  position: relative;
+  z-index: 10;
+  margin-top: -100vh; /* 🔥 clave */
 }
-.sub-content { position: absolute; opacity: 0; }
 
 .scroll-down {
   position: absolute;
@@ -345,5 +598,9 @@ body { margin: 0; font-family: sans-serif; overflow-x: hidden; background: #000;
     opacity: 0;
     transform: rotate(45deg) translate(10px, 10px);
   }
+}
+
+:deep(.swiper-wrapper) {
+  transition-timing-function: linear !important;
 }
 </style>

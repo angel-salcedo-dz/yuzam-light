@@ -3,11 +3,12 @@ import Header from "@/components/Header.vue";
 import {gsap} from "gsap";
 import {ScrollSmoother} from "gsap/ScrollSmoother";
 import {ScrollTrigger} from "gsap/ScrollTrigger";
-import {onMounted} from "vue";
+import {onMounted, ref} from "vue";
 import {Swiper, SwiperSlide} from 'swiper/vue';
 import { Autoplay } from "swiper/modules";
 import 'swiper/css';
-
+import VueEasyLightbox from 'vue-easy-lightbox/external-css'
+import 'vue-easy-lightbox/external-css/vue-easy-lightbox.css'
 import image_1 from '@/assets/1.jpeg';
 import image_2 from '@/assets/1_0.jpeg';
 import image_3 from '@/assets/1_1.jpeg';
@@ -24,10 +25,33 @@ const images = [
   image_5,
 ];
 
+const visibleRef = ref(false)
+const indexRef = ref(0)
+
+let smootherInstance;
+
+const showImg = (index) => {
+  indexRef.value = index
+  visibleRef.value = true
+
+  if (smootherInstance) {
+    smootherInstance.paused(true)
+  }
+}
+
+const onHide = () => {
+  visibleRef.value = false
+
+  if (smootherInstance) {
+    smootherInstance.paused(false)
+  }
+}
+
+
 gsap.registerPlugin(ScrollSmoother, ScrollTrigger);
 
 onMounted(() => {
-  const smoother = ScrollSmoother.create({
+  smootherInstance = ScrollSmoother.create({
     wrapper: "#smooth-wrapper",
     content: "#smooth-content",
     smooth: 1.5,
@@ -58,7 +82,7 @@ onMounted(() => {
                 Nuestro trabajo parte de una formación profesional en iluminación escénica donde la luz no
                 se improvisa. <br> <br>
                 Con estudios en iluminación para ópera, teatro y danza, así como en iluminación de
-                vestuario, escenografía y creación de texturas con gobos. <br> <br>
+                vestuario, escenografía y creación de texturas con globos. <br> <br>
                 Esta base profesional es la que hoy llevamos al mundo de las bodas y nos permite diseñar
                 atmósferas con intención,
                 entender cómo se comporta la luz en cada material y cómo transformar un espacio sin perder
@@ -69,8 +93,9 @@ onMounted(() => {
 
             </div>
             <div class="">
-              <div class="slider">
+              <div >
                 <swiper
+                    :tag="'about-us'"
                     :slides-per-view="3"
                     :space-between="20"
                     :direction="'horizontal'"
@@ -93,8 +118,8 @@ onMounted(() => {
                       disableOnInteraction: false,
                     }" class="h-82"
                 >
-                  <swiper-slide v-for="image in images">
-                    <img :src="image" alt="" class="w-full h-full object-cover rounded-xl">
+                  <swiper-slide v-for="(image, index) in images">
+                    <img :src="image" :key="'about-' + index" alt="" class="w-full h-full object-cover rounded-xl hover:cursor-pointer" @click="() => showImg(index)">
                   </swiper-slide>
                 </swiper>
 
@@ -105,10 +130,23 @@ onMounted(() => {
       </div>
     </div>
   </div>
+  <vue-easy-lightbox
+      :visible="visibleRef"
+      :imgs="images"
+      :index="indexRef"
+      @hide="onHide"
+      :move-disabled="true"
+      :zoom-disabled="false"
+      :rotate-disabled="true"
+      :pinch-disabled="false"
+      :loop="true"
+  >
+    <template v-slot:prev-btn="{ next }">
+    </template>
+    <template v-slot:next-btn="{ next }">
+    </template>
+  </vue-easy-lightbox>
 </template>
 
 <style scoped>
-.swiper-wrapper {
-  transition-timing-function: linear !important;
-}
 </style>

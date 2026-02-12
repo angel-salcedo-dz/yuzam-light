@@ -5,6 +5,8 @@ import {ScrollSmoother} from "gsap/ScrollSmoother";
 import {ScrollTrigger} from "gsap/ScrollTrigger";
 import {onMounted, ref} from "vue";
 import { VueRecaptcha } from 'vue-recaptcha';
+import InstagramLogo from '@/assets/Instagram_logo_2022.svg';
+import WhatsappLogo from '@/assets/whatsapp_vertical.svg';
 
 import {
   TransitionRoot,
@@ -76,7 +78,7 @@ let sendForm = (token) => {
   isLoading.value = true
 
   try {
-    axios.post('https://formspree.io/f/xvzbokpw', {
+    axios.post('https://formspree.io/f/meelazld', {
       'Nombre': form.value.name,
       'Teléfono de contacto': form.value.phone,
       'Fecha del evento': form.value.date,
@@ -121,27 +123,43 @@ let sendForm = (token) => {
         <section class="text-white/90 text-xl z-2 pt-24">
           <div class="w-full h-full p-0 lg:p-8 grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-16 lg:divide-x">
             <div
-                class="flex lg:justify-center items-center order-2 lg:order-1 border-t border-white lg:border-t-0 pt-12 lg:pt-0 pb-12 lg:pb-0">
+                class="flex lg:justify-center items-center border-b border-white lg:border-b-0 lg:pt-0 pb-6 lg:pb-0">
               <div class="space-y-8">
-                <div class="flex gap-4 items-center">
-                  <div>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                         class="icon icon-tabler icons-tabler-outline icon-tabler-brand-whatsapp size-9">
-                      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                      <path d="M3 21l1.65 -3.8a9 9 0 1 1 3.4 2.9l-5.05 .9"/>
-                      <path
-                          d="M9 10a.5 .5 0 0 0 1 0v-1a.5 .5 0 0 0 -1 0v1a5 5 0 0 0 5 5h1a.5 .5 0 0 0 0 -1h-1a.5 .5 0 0 0 0 1"/>
-                    </svg>
-                  </div>
-                  <div class="space-y-1 text-base">
-                    <div class="text-white/80 leading-relaxed">
-                      Whatsapp
+
+                <div>
+                  <a href="#" target="_blank">
+                    <div class="flex gap-4 items-center">
+                      <div>
+                        <img :src="WhatsappLogo" alt="" class="size-9 rounded-lg">
+                      </div>
+                      <div class="space-y-1 text-base">
+                        <div class="text-white/80 leading-relaxed">
+                          Whatsapp
+                        </div>
+                        <div class="text-white underline">
+                          <a href="#" target="_blank">Contáctanos aquí</a>
+                        </div>
+                      </div>
                     </div>
-                    <div class="text-white underline">
-                      <a href="#" target="_blank">Contáctanos aquí</a>
+                  </a>
+                </div>
+
+                <div>
+                  <a href="https://www.instagram.com/yuzamlighting/" target="_blank">
+                    <div class="flex gap-4 items-center">
+                      <div>
+                        <img :src="InstagramLogo" alt="" class="size-9">
+                      </div>
+                      <div class="space-y-1 text-base">
+                        <div class="text-white/80 leading-relaxed">
+                          Instagram
+                        </div>
+                        <div class="text-white">
+                          @yuzamlighting
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  </a>
                 </div>
                 <div class="flex gap-4 items-center">
                   <div>
@@ -158,13 +176,13 @@ let sendForm = (token) => {
                       Email
                     </div>
                     <div class="text-white">
-                      example@mail.com
+                      yuzamlight.contact@gmail.com
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="lg:col-span-2 pb-6 lg:pb-0 order-1 lg:order-2">
+            <div class="lg:col-span-2 pb-6 lg:pb-0">
               <form @submit.prevent="handleExecute" class="rounded-xl space-y-4">
                 <div
                     class="text-3xl lg:text-5xl font-semibold text-white tracking-wide pb-4 text-left"
@@ -204,7 +222,7 @@ let sendForm = (token) => {
                 <div>
                   <input v-model="form.type" required name="Tipo de celebración" id="Tipo de celebración" type="text"
                          class="mt-2 block bg-zinc-700 rounded-md w-full text-base px-4 py-2 text-white font-semibold placeholder-white/70"
-                         placeholder="Tipo de celebración (e.g. boda, cóctel, recepción, evento privado)">
+                         placeholder="Tipo de celebración (boda, cóctel, recepción, evento privado)">
                 </div>
                 <div>
                   <textarea v-model="form.comments" required name="Cuéntanos tu idea" id="Cuéntanos tu idea" rows="6"
